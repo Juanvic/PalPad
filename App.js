@@ -1,7 +1,15 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, Button, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Button,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList } from "react-native";
+import { ActivityIndicator, FlatList, Linking } from "react-native";
 import { useFonts } from "expo-font";
 
 export default function App() {
@@ -14,7 +22,9 @@ export default function App() {
 
   const getPals = async () => {
     try {
-      const response = await fetch("http://192.168.1.12:8080/?page=1&limit=150");
+      const response = await fetch(
+        "http://192.168.1.12:8080/?page=1&limit=150"
+      );
       const json = await response.json();
       setData(json.content);
     } catch (error) {
@@ -48,7 +58,6 @@ export default function App() {
             <View style={[styles.card, styles.shadowProp]}>
               <Text style={styles.textoPals}>
                 Nome: {item.name} {"\n"}
-                Link da Wiki: {item.wiki} {"\n"}
                 Tipo: {item.types} {"\n"}
                 Serventia:{" "}
                 {item.suitability
@@ -60,15 +69,19 @@ export default function App() {
                 Aura: {item.aura.name} {"\n"}
                 Descrição da Aura: {item.aura.description} {"\n"}
               </Text>
-              <Image
-                source={{ uri: `${item.imageWiki}` }}
-                style={{
-                  flex: 1,
-                  width: 280,
-                  height: 280,
-                  resizeMode: "contain",
-                }}
-              />
+              <TouchableOpacity
+                onPress={() => {Linking.openURL(item.wiki)}}
+              >
+                <Image
+                  source={{ uri: `${item.imageWiki}` }}
+                  style={{
+                    flex: 1,
+                    width: 280,
+                    height: 280,
+                    resizeMode: "contain",
+                  }}
+                />
+              </TouchableOpacity>
 
               {/* Essa view de botão pra fazer alguma coisa com cada card, pode ser um check pra marcar o card */}
               {/* <View> 
@@ -138,7 +151,7 @@ const styles = StyleSheet.create({
   },
   viewButton: {
     paddingTop: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 50,
   },
 });
