@@ -45,7 +45,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
-      <Text style={[styles.header]}>Proto Palpédia</Text>
+      <Text style={[styles.header]}>Palpédia</Text>
 
       {isLoading ? (
         <ActivityIndicator />
@@ -56,38 +56,43 @@ export default function App() {
           keyExtractor={({ id }) => id}
           renderItem={({ item }) => (
             <View style={[styles.card, styles.shadowProp]}>
+              <View style={styles.image}>
+                <TouchableOpacity
+                  onPress={() => {Linking.openURL(item.wiki)}}
+                >
+                  <Image
+                    source={{ uri: `${item.imageWiki}` }}
+                    style={{
+                      flex: 1,
+                      width: 200,
+                      height: 200,
+                      resizeMode: "contain",
+                      alignSelf: 'center'
+                    }}
+                  />
+                </TouchableOpacity>
+
+              </View>
               <Text style={styles.textoPals}>
                 Nome: {item.name} {"\n"}
-                Tipo: {item.types} {"\n"}
+                Tipo:{" "}
+                {item.types.map((secType) => secType).join(" & ")} {"\n"}
                 Serventia:{" "}
                 {item.suitability
                   .map((secSuit) => secSuit.type + " Lv " + secSuit.level)
                   .join(" & ")}{" "}
                 {"\n"}
-                Itens dropados:{" "}
+                Drops:{" "}
                 {item.drops.map((secItem) => secItem).join(" & ")} {"\n"}
-                Aura: {item.aura.name} {"\n"}
-                Descrição da Aura: {item.aura.description} {"\n"}
+                Habilidade: {item.aura.name} {"\n"}
+                Descrição da Habilidade: {item.aura.description} {"\n"}
               </Text>
-              <TouchableOpacity
-                onPress={() => {Linking.openURL(item.wiki)}}
-              >
-                <Image
-                  source={{ uri: `${item.imageWiki}` }}
-                  style={{
-                    flex: 1,
-                    width: 280,
-                    height: 280,
-                    resizeMode: "contain",
-                  }}
-                />
-              </TouchableOpacity>
 
               {/* Essa view de botão pra fazer alguma coisa com cada card, pode ser um check pra marcar o card */}
-              {/* <View> 
-              <Button title='Check' onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
-
-            </View> */}
+              {/* <View style={styles.viewButton}> 
+                <Button title='✓' color={('#d1861a')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
+                <Button title='✖' color={('gray')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
+              </View> */}
             </View>
           )}
         />
@@ -148,10 +153,18 @@ const styles = StyleSheet.create({
     color: "#000",
     fontFamily: "Calibri Regular",
     fontSize: 23,
+    paddingTop: 5,
   },
   viewButton: {
     paddingTop: 10,
+    alignSelf: 'center',
     flexDirection: "row",
     gap: 50,
+  },
+  image: {
+    borderColor: '#a8c4c8',
+    borderWidth: 2,
+    borderRadius: 20
+
   },
 });
