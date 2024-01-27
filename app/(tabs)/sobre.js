@@ -1,14 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Switch, Text, View } from "react-native";
 import { Link } from "expo-router";
+import React, {useState, useContext} from "react";
+import Global from "../../Global";
 
 export default function Sobre() {
+
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: '#1d1d1d'}]}>
       <View style={styles.main}>
-        <Text style={styles.title}>Créditos</Text>
-        <Text style={styles.subtitle}>Juan Almeida desevolvedor do app</Text>
-        <Text>Todos os créditos para o criador da api</Text>
-        <Link href='/'>Clica aqui para voltar</Link>
+        <Text style={[styles.title, {color: '#fff'}]}>Créditos</Text>
+        <Text style={[styles.subtitle, {color: '#fff'}]}>Juan Almeida desenvolvedor do app</Text>
+        <Text style={{fontStyle: 'italic', color: Global.COLOR.LIGHTBLUE, fontSize: 25}}>@juanvic04 no X/Twitter</Text>
+        <Text style={[{color:'#fff', fontSize: 20}]}>e Victor Eyer desenvolvedor da api </Text>
+        <Link style={[{ fontWeight: "bold", fontStyle: 'italic', color: '#fff', fontSize: 25}]} href='https://github.com/mlg404/palworld-paldex-api'>Github da api</Link>
+
       </View>
     </View>
   );
@@ -16,6 +22,7 @@ export default function Sobre() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#292929',
     flex: 1,
     alignItems: "center",
     padding: 24,

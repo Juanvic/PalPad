@@ -7,9 +7,12 @@ import {
   Button,
   Alert,
   Pressable,
+  TextInput,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Linking } from "react-native";
+import Global from "../../Global";
 import { useFonts } from "expo-font";
 
 export default function App() {
@@ -23,11 +26,10 @@ export default function App() {
 
   const getPals = async () => {
     try {
-      const response = await fetch(
-        "http://192.168.1.12:8080/?page=1&limit=150"
-      );
+      const response = await fetch(Global.URL);
       const json = await response.json();
       setData(json.content);
+      // console.log(json.content); //aqui está todo o conteúdo
     } catch (error) {
       console.error(error);
     } finally {
@@ -39,14 +41,29 @@ export default function App() {
     getPals();
   }, []);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
   if (!loaded) {
     return null;
   }
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>Palpédia</Text>
+      <TextInput
+        placeholder="Buscar"
+        style={styles.searchBox}
+        clearButtonMode="always"
+        autoCapitalize="none"
+        autoCorrect={false}
+        value={searchQuery}
+        onChange={(query) => handleSearch(query)}
+      />
 
       {isLoading ? (
         <ActivityIndicator />
@@ -56,52 +73,119 @@ export default function App() {
           data={data}
           keyExtractor={({ id }) => id}
           renderItem={({ item }) => (
-            <View style={[styles.card, styles.shadowProp]}>
-              <View style={styles.image}>
-                <Pressable
-                  onPress={() => {Linking.openURL(item.wiki)}}
-                  style={({ pressed }) => [
-                    styles.itemBox,
-                    pressed && {
-                      opacity: 0.8,
-                      backgroundColor: 'white'
-                    },
-                  ]}
-                >
+            <Pressable
+              onPress={() => {
+                Linking.openURL(item.wiki);
+              }}
+              style={({ pressed }) => [
+                styles.itemBox,
+                pressed && {
+                  opacity: 0.8,
+                  backgroundColor: "white",
+                },
+              ]}
+            >
+              <View style={[styles.card, styles.shadowProp]}>
+                <View>
                   <Image
                     source={{ uri: `${item.imageWiki}` }}
                     style={{
                       flex: 1,
-                      width: 200,
-                      height: 200,
+                      width: 130,
+                      height: 130,
+                      borderColor: Global.COLOR.BORDERCARD,
+                      borderWidth: 2,
+                      borderRadius: 20,
                       resizeMode: "contain",
-                      alignSelf: 'center'
+                      alignSelf: "center",
                     }}
                   />
-                </Pressable>
+                </View>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Bold",
+                    fontSize: 30,
+                    fontWeight: "bold",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
+                {'Nº'+item.key} {item.name}
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Regular",
+                    fontSize: 30,
+                    fontWeight: "500",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
+                  Type:{" "}
+                  {item.types.map((secType) => secType).join(" \nType²: ")}{" "}
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Regular",
+                    fontSize: 20,
+                    fontWeight: "500",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
+                  Suitability:{" "}
+                  {item.suitability
+                    .map((secSuit) => secSuit.type + " Lv " + secSuit.level)
+                    .join(" \n ")}{" "}
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Regular",
+                    fontSize: 20,
+                    fontWeight: "500",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
+                  Drops: {item.drops.map((secItem) => secItem).join(" & ")}
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Regular",
+                    fontSize: 20,
+                    fontWeight: "500",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
+                  Aura: {item.aura.name}
+                </Text>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Regular",
+                    fontSize: 20,
+                    fontWeight: "500",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
+                  Description: {item.aura.description}
+                </Text>
+                <Text style={styles.textoPals}></Text>
 
-              </View>
-              <Text style={styles.textoPals}>
-                Nome: {item.name} {"\n"}
-                Tipo:{" "}
-                {item.types.map((secType) => secType).join(" & ")} {"\n"}
-                Serventia:{" "}
-                {item.suitability
-                  .map((secSuit) => secSuit.type + " Lv " + secSuit.level)
-                  .join(" & ")}{" "}
-                {"\n"}
-                Drops:{" "}
-                {item.drops.map((secItem) => secItem).join(" & ")} {"\n"}
-                Habilidade: {item.aura.name} {"\n"}
-                Descrição da Habilidade: {item.aura.description} {"\n"}
-              </Text>
-
-              {/* Essa view de botão pra fazer alguma coisa com cada card, pode ser um check pra marcar o card */}
-              {/* <View style={styles.viewButton}> 
+                {/* Essa view de botão pra fazer alguma coisa com cada card, pode ser um check pra marcar o card */}
+                {/* <View style={styles.viewButton}> 
                 <Button title='✓' color={('#d1861a')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
                 <Button title='✖' color={('gray')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
               </View> */}
-            </View>
+              </View>
+            </Pressable>
           )}
         />
       )}
@@ -121,27 +205,27 @@ export default function App() {
           }
         />
       </View> */}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Global.COLOR.BACKGROUND,
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
   },
   header: {
-    color: "#d1861a",
+    color: Global.COLOR.ORANGE,
     fontFamily: "Calibri Bold",
     fontSize: 30,
     fontWeight: 500,
     alignSelf: "center",
   },
   card: {
-    backgroundColor: "#1795d3",
+    backgroundColor: Global.COLOR.CARDBACKGROUND,
     borderWidth: 5,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -149,9 +233,10 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 30,
     elevation: 2,
+    maxWidth: 280,
   },
   shadowProp: {
-    shadowColor: "#050c12",
+    shadowColor: Global.COLOR.SHADOW,
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
@@ -164,14 +249,16 @@ const styles = StyleSheet.create({
   },
   viewButton: {
     paddingTop: 10,
-    alignSelf: 'center',
+    alignSelf: "center",
     flexDirection: "row",
     gap: 50,
   },
-  image: {
-    borderColor: '#a8c4c8',
-    borderWidth: 2,
-    borderRadius: 20
-
+  searchBox: {
+    color: Global.COLOR.ORANGE,
+    backgroundColor: "#fff",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 20,
   },
 });

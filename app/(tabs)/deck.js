@@ -6,12 +6,13 @@ import {
   Image,
   Button,
   Alert,
-  TouchableOpacity,
+  SafeAreaView,
   Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Linking } from "react-native";
 import { useFonts } from "expo-font";
+import Global from "../../Global";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -27,7 +28,7 @@ export default function App() {
   const getPals = async () => {
     try {
       const response = await fetch(
-        "http://192.168.1.12:8080/?page=1&limit=150"
+        Global.URL
       );
       const json = await response.json();
       setData(json.content);
@@ -46,7 +47,6 @@ export default function App() {
       numberOfElementsLastRow !== columns &&
       numberOfElementsLastRow == 0
     ) {
-      // data.push({empty: true});
       numberOfElementsLastRow++;
     }
 
@@ -62,16 +62,15 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Text style={[styles.header]}>Selecione</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="light" backgroundColor="#1d1d1d" />
+      <Text style={[styles.header]}>PalDeck</Text>
 
       {isLoading ? (
         <ActivityIndicator />
       ) : (
         <FlatList
-          style={styles.container2}
-          initialNumToRender={3}
+          initialNumToRender={9}
           data={formatData(data, columns)}
           keyExtractor={({ id }) => id}
           numColumns={columns}
@@ -103,10 +102,14 @@ export default function App() {
                     }}
                   />
                 </View>
+                <Text style={{color: '#fff', fontFamily: "Calibri Bold", fontWeight: 'bold', alignSelf: 'center', paddingTop: 10}}>
+                  {item.name}
+                  {'\n'} 
+                  {'Nº'+item.key}
+                </Text>
                 <Text style={styles.textoPals}>
-                  Nome: {item.name} {"\n"}
-                  Tipo:{" "}
-                  {item.types.map((secType) => secType).join(" \nTipo²: ")}{" "}
+                  Type:{" "}
+                  {item.types.map((secType) => secType).join(" \nType²: ")}{" "}
                   {"\n"}
                 </Text>
 
@@ -136,27 +139,29 @@ export default function App() {
           }
         />
       </View> */}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Global.COLOR.BACKGROUND,
     alignItems: "center",
-    justifyContent: "center",
     padding: 24,
+    paddingHorizontal: 50,
   },
   header: {
-    color: "#d1861a",
+    color: Global.COLOR.ORANGE,
     fontFamily: "Calibri Bold",
     fontSize: 30,
     fontWeight: 500,
     alignSelf: "center",
   },
   card: {
-    backgroundColor: "#1795d3",
+    backgroundColor: Global.COLOR.CARDBACKGROUND,
+    // maxHeight: 150,
+    maxWidth: 150,
     borderWidth: 5,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -167,14 +172,15 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   shadowProp: {
-    shadowColor: "#050c12",
+    shadowColor: Global.COLOR.SHADOW,
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
   textoPals: {
-    color: "#000",
+    color: "#fff",
     fontFamily: "Calibri Regular",
+    alignSelf: 'center',
     fontSize: 15,
     paddingTop: 5,
   },
@@ -185,15 +191,9 @@ const styles = StyleSheet.create({
     gap: 50,
   },
   image: {
-    borderColor: "#a8c4c8",
+    borderColor: Global.COLOR.BORDERCARD,
     borderWidth: 2,
-    borderRadius: 20,
-  },
-  container2: {
-    flex: 1,
-    flexBasis: 0,
-    marginVertical: 20,
-    // marginHorizontal: 30,
+    borderRadius: 10,
   },
   selecionado: {
     tintColor: "red",
