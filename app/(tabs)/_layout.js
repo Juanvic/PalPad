@@ -23,7 +23,7 @@ export default function TabsLayout(){
             >
             </Tabs.Screen>
             <Tabs.Screen
-                name="sobre"
+                name="about"
                 options={{title: "About", tabBarIcon: ({size, color}) => (<MaterialIcons name="person" size={size} color={color} />)}}
 
             >
