@@ -85,9 +85,6 @@ export default function App() {
                 onLongPress={() => {
                   setCount(count - 1);
                 }}
-                // onPress={() => {
-                //   Linking.openURL(item.wiki);
-                // }}
                 style={({ pressed }) => [
                   styles.itemBox,
                   pressed && {
@@ -96,7 +93,6 @@ export default function App() {
                   },
                 ]}
 
-                // onPressOut={() => {styles.selecionado}}
               >
                 <View style={styles.image}>
                   <Image
