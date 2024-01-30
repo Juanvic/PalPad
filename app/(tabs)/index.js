@@ -4,14 +4,14 @@ import {
   Text,
   View,
   Image,
-  Button,
-  Alert,
   Pressable,
   TextInput,
   SafeAreaView,
+  ActivityIndicator,
+  FlatList,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Linking } from "react-native";
 import Global from "../../Global";
 import { useFonts } from "expo-font";
 
@@ -29,7 +29,6 @@ export default function App() {
       const response = await fetch(Global.URL);
       const json = await response.json();
       setData(json.content);
-      // console.log(json.content); //aqui está todo o conteúdo
     } catch (error) {
       console.error(error);
     } finally {
@@ -55,7 +54,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>Palpédia</Text>
-      <TextInput
+      {/* <TextInput
         placeholder="Buscar"
         style={styles.searchBox}
         clearButtonMode="always"
@@ -63,7 +62,7 @@ export default function App() {
         autoCorrect={false}
         value={searchQuery}
         onChange={(query) => handleSearch(query)}
-      />
+      /> */}
 
       {isLoading ? (
         <ActivityIndicator />
@@ -111,7 +110,7 @@ export default function App() {
                     paddingTop: 10,
                   }}
                 >
-                {'Nº'+item.key} {item.name}
+                  {"Nº" + item.key} {item.name}
                 </Text>
                 <Text
                   style={{
@@ -179,32 +178,11 @@ export default function App() {
                 </Text>
                 <Text style={styles.textoPals}></Text>
 
-                {/* Essa view de botão pra fazer alguma coisa com cada card, pode ser um check pra marcar o card */}
-                {/* <View style={styles.viewButton}> 
-                <Button title='✓' color={('#d1861a')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
-                <Button title='✖' color={('gray')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
-              </View> */}
               </View>
             </Pressable>
           )}
         />
       )}
-      {/* View de Próxima Página e Retroceder */}
-      {/* <View style={styles.viewButton}>
-        <Button
-          title="Próxima Página"
-          onPress={() =>
-            Alert.alert("Este botão deve carregar a próxima página!")
-          }
-        />
-
-        <Button
-          title="Retornar"
-          onPress={() =>
-            Alert.alert("Este botão deve carregar a página anterior!")
-          }
-        />
-      </View> */}
     </SafeAreaView>
   );
 }

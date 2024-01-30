@@ -4,13 +4,13 @@ import {
   Text,
   View,
   Image,
-  Button,
-  Alert,
+  ActivityIndicator,
+  FlatList,
+  Linking,
   SafeAreaView,
   Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Linking } from "react-native";
 import { useFonts } from "expo-font";
 import Global from "../../Global";
 
@@ -27,9 +27,7 @@ export default function App() {
 
   const getPals = async () => {
     try {
-      const response = await fetch(
-        Global.URL
-      );
+      const response = await fetch(Global.URL);
       const json = await response.json();
       setData(json.content);
     } catch (error) {
@@ -53,6 +51,8 @@ export default function App() {
     return data;
   };
 
+  const [count, setCount] = useState(0);
+
   useEffect(() => {
     getPals();
   }, []);
@@ -65,6 +65,9 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>PalDeck</Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>{count}</Text>
+      </View>
 
       {isLoading ? (
         <ActivityIndicator />
@@ -78,16 +81,22 @@ export default function App() {
             <View style={[styles.card, styles.shadowProp]}>
               <Pressable
                 // onPress={() => {Linking.openURL(item.wiki)}}
-                onLongPress={() => {Linking.openURL(item.wiki)}}
+                onPress={() => setCount(count + 1)}
+                onLongPress={() => {
+                  setCount(count - 1);
+                }}
+                // onPress={() => {
+                //   Linking.openURL(item.wiki);
+                // }}
                 style={({ pressed }) => [
                   styles.itemBox,
                   pressed && {
                     opacity: 0.8,
-                    backgroundColor: "orange",
+                    backgroundColor: pressed ? "orange" : "green",
                   },
                 ]}
 
-                // onPress={() => {styles.selecionado}}
+                // onPressOut={() => {styles.selecionado}}
               >
                 <View style={styles.image}>
                   <Image
@@ -102,10 +111,18 @@ export default function App() {
                     }}
                   />
                 </View>
-                <Text style={{color: '#fff', fontFamily: "Calibri Bold", fontWeight: 'bold', alignSelf: 'center', paddingTop: 10}}>
+                <Text
+                  style={{
+                    color: "#fff",
+                    fontFamily: "Calibri Bold",
+                    fontWeight: "bold",
+                    alignSelf: "center",
+                    paddingTop: 10,
+                  }}
+                >
                   {item.name}
-                  {'\n'} 
-                  {'Nº'+item.key}
+                  {"\n"}
+                  {"Nº" + item.key}
                 </Text>
                 <Text style={styles.textoPals}>
                   Type:{" "}
@@ -113,7 +130,7 @@ export default function App() {
                   {"\n"}
                 </Text>
 
-                {/* Essa view de botão pra fazer alguma coisa com cada card, pode ser um check pra marcar o card */}
+                {/* View de check pra marcar o card */}
                 {/* <View style={styles.viewButton}> 
                 <Button title='✓' color={('#d1861a')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
                 <Button title='✖' color={('gray')} onPress={() => Alert.alert('Este botão deve carregar a próxima página!')}/>
@@ -123,22 +140,6 @@ export default function App() {
           )}
         />
       )}
-      {/* View de Próxima Página e Retroceder */}
-      {/* <View style={styles.viewButton}>
-        <Button
-          title="Próxima Página"
-          onPress={() =>
-            Alert.alert("Este botão deve carregar a próxima página!")
-          }
-        />
-
-        <Button
-          title="Retornar"
-          onPress={() =>
-            Alert.alert("Este botão deve carregar a página anterior!")
-          }
-        />
-      </View> */}
     </SafeAreaView>
   );
 }
@@ -160,14 +161,11 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: Global.COLOR.CARDBACKGROUND,
-    // maxHeight: 150,
     maxWidth: 150,
     borderWidth: 5,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderRadius: 10,
-    // padding: 12,
-    // marginTop: 30,
     margin: 5,
     elevation: 2,
   },
@@ -180,7 +178,7 @@ const styles = StyleSheet.create({
   textoPals: {
     color: "#fff",
     fontFamily: "Calibri Regular",
-    alignSelf: 'center',
+    alignSelf: "center",
     fontSize: 15,
     paddingTop: 5,
   },
@@ -197,6 +195,18 @@ const styles = StyleSheet.create({
   },
   selecionado: {
     tintColor: "red",
-    backgroundColor: "orange",
+    backgroundColor: Global.COLOR.ORANGE,
+  },
+  textContainer: {
+    alignSelf: "center",
+    marginBottom: 50,
+    borderBottomColor: Global.COLOR.DARKGRAY,
+    borderBottomWidth: 2,
+  },
+  text: {
+    textAlign: "center",
+    color: Global.COLOR.ORANGE,
+    padding: 20,
+    fontSize: 40,
   },
 });

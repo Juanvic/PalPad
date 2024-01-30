@@ -12,7 +12,7 @@ export default function Sobre() {
         <Text style={[styles.title, {color: '#fff'}]}>Créditos</Text>
         <Text style={[styles.subtitle, {color: '#fff'}]}>Juan Almeida desenvolvedor do app</Text>
         <Text style={{fontStyle: 'italic', color: Global.COLOR.LIGHTBLUE, fontSize: 25}}>@juanvic04 no X/Twitter</Text>
-        <Text style={[{color:'#fff', fontSize: 20}]}>e Victor Eyer desenvolvedor da api </Text>
+        <Text style={[{color:'#fff', fontSize: 25}]}>e Victor Eyer desenvolvedor da api </Text>
         <Link style={[{ fontWeight: "bold", fontStyle: 'italic', color: '#fff', fontSize: 25}]} href='https://github.com/mlg404/palworld-paldex-api'>Github da api</Link>
 
       </View>
