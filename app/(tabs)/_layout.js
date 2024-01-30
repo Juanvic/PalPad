@@ -13,7 +13,7 @@ export default function TabsLayout(){
         >
             <Tabs.Screen 
                 name="index"
-                options={{title: "Início", tabBarIcon: ({size, color}) => (<MaterialIcons name="home" size={size} color={color} />)}}
+                options={{title: "Home", tabBarIcon: ({size, color}) => (<MaterialIcons name="home" size={size} color={color} />)}}
             >
             </Tabs.Screen>
             <Tabs.Screen
@@ -24,7 +24,7 @@ export default function TabsLayout(){
             </Tabs.Screen>
             <Tabs.Screen
                 name="sobre"
-                options={{title: "Sobre", tabBarIcon: ({size, color}) => (<MaterialIcons name="person" size={size} color={color} />)}}
+                options={{title: "About", tabBarIcon: ({size, color}) => (<MaterialIcons name="person" size={size} color={color} />)}}
 
             >
             </Tabs.Screen>
