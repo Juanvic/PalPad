@@ -53,7 +53,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
-      <Text style={[styles.header]}>Palpédia</Text>
+      <Text style={[styles.header]}>Palpad</Text>
       {/* <TextInput
         placeholder="Buscar"
         style={styles.searchBox}
