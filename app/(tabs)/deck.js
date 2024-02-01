@@ -6,12 +6,13 @@ import {
   Image,
   ActivityIndicator,
   FlatList,
-  Linking,
   SafeAreaView,
   Pressable,
   Alert,
+  Button,
 } from "react-native";
 import React, { useEffect, useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import Global from "../../Global";
 
@@ -64,27 +65,22 @@ export default function App() {
 
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const handleOnLongPress = (data) => {
-    setSelectedItems([...selectedItems, '#' + data.key + ' ' + data.name]);
+  const selectPals = (data) => {
+    if (selectedItems.includes("#" + data.key + " " + data.name)){
+      const newListItem = selectedItems.filter(dataInfo => dataInfo !== "#" + data.key + " " + data.name)
+      return setSelectedItems(newListItem)
+    }
+    setSelectedItems([...selectedItems, "#" + data.key + " " + data.name]);
   };
-
-  onShowItemSelected = () => {
-    const listSelected = data.filter(item => item.selected == true);
-    let contentAlert = '';
-    listSelected.forEach(item => {
-      contentAlert = contentAlert + `${item.key}. ` + item.name + '\n';
-    })
-    Alert.alert("Pals Collected", {selectedItems}
-    
-    );
-  }
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
-      <Text style={[styles.header]}>PalDeck</Text>
+      <Text style={[styles.header]}>Collection</Text>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>{selectedItems.length}</Text>
+        <Text style={styles.text}>
+          {selectedItems.length}/{data.length}
+        </Text>
       </View>
       <Pressable
         style={({ pressed }) => [
@@ -93,8 +89,23 @@ export default function App() {
             opacity: 0.8,
           },
         ]}
-        onPress={()=> 
-          Alert.alert("Pals Collected" ,`${selectedItems.map((secItem) => secItem).join("\n")}`) 
+        onPress={() =>
+          Alert.alert("Collected Pals",
+            `${selectedItems.map((secItem) => secItem).join("\n")}`,
+            [
+              {
+                text: "Share",
+                onPress: () => Alert.alert("Pergunte-me mais tarde clicado")
+              },
+              {
+                text: "Export",
+                onPress: () => Alert.alert("Cancelar Clicado"),
+                style: "cancel"
+              },
+              { 
+                text: "Close", 
+              }
+            ])
         }
       >
         <Text
@@ -131,10 +142,10 @@ export default function App() {
                 }}
                 onPress={() => {
                   setSelectedPals(index);
-                  handleOnLongPress(item);
+                  selectPals(item);
                 }}
 
-                // onLongPress={()=>handleOnLongPress(item)}
+                // onLongPress={()=>selectPals(item)}
               >
                 <View style={styles.image}>
                   <Image
