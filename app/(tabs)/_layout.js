@@ -28,6 +28,7 @@ export default function TabsLayout(){
 
             >
             </Tabs.Screen>
+
         </Tabs>
     )
 } 

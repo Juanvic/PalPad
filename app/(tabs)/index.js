@@ -125,59 +125,23 @@ export default function App() {
                   Type:{" "}
                   {item.types.map((secType) => secType).join(" \nType²: ")}{" "}
                 </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: "Calibri Regular",
-                    fontSize: 20,
-                    fontWeight: "500",
-                    alignSelf: "center",
-                    paddingTop: 10,
-                  }}
-                >
+                <Text style={styles.textoPals}>
                   Suitability:{" "}
                   {item.suitability
                     .map((secSuit) => secSuit.type + " Lv " + secSuit.level)
                     .join(" \n ")}{" "}
                 </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: "Calibri Regular",
-                    fontSize: 20,
-                    fontWeight: "500",
-                    alignSelf: "center",
-                    paddingTop: 10,
-                  }}
-                >
+                <Text style={styles.textoPals}>
                   Drops: {item.drops.map((secItem) => secItem).join(" & ")}
                 </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: "Calibri Regular",
-                    fontSize: 20,
-                    fontWeight: "500",
-                    alignSelf: "center",
-                    paddingTop: 10,
-                  }}
-                >
-                  Aura: {item.aura.name}
+                <Text style={styles.textoPals}>Aura: {item.aura.name}</Text>
+                <Text style={styles.textoPals}>
+                  Aura Description: {item.aura.description}
                 </Text>
-                <Text
-                  style={{
-                    color: "#fff",
-                    fontFamily: "Calibri Regular",
-                    fontSize: 20,
-                    fontWeight: "500",
-                    alignSelf: "center",
-                    paddingTop: 10,
-                  }}
-                >
-                  Description: {item.aura.description}
+                <Text style={styles.textoPals}>
+                  Pal Description: {item.description}
                 </Text>
                 <Text style={styles.textoPals}></Text>
-
               </View>
             </Pressable>
           )}
@@ -220,10 +184,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   textoPals: {
-    color: "#000",
+    color: "#fff",
     fontFamily: "Calibri Regular",
-    fontSize: 23,
-    paddingTop: 5,
+    fontSize: 20,
+    fontWeight: "500",
+    alignSelf: "center",
+    paddingTop: 10,
   },
   viewButton: {
     paddingTop: 10,

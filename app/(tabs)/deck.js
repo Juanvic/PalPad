@@ -9,6 +9,7 @@ import {
   Linking,
   SafeAreaView,
   Pressable,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
@@ -51,8 +52,6 @@ export default function App() {
     return data;
   };
 
-  const [count, setCount] = useState(0);
-
   useEffect(() => {
     getPals();
   }, []);
@@ -61,13 +60,49 @@ export default function App() {
     return null;
   }
 
+  const [selectedPals, setSelectedPals] = useState(-1);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleOnLongPress = (data) => {
+    setSelectedItems([...selectedItems, '#' + data.key + ' ' + data.name]);
+  };
+
+  onShowItemSelected = () => {
+    const listSelected = data.filter(item => item.selected == true);
+    let contentAlert = '';
+    listSelected.forEach(item => {
+      contentAlert = contentAlert + `${item.key}. ` + item.name + '\n';
+    })
+    Alert.alert("Pals Collected", {selectedItems}
+    
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>PalDeck</Text>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>{count}</Text>
+        <Text style={styles.text}>{selectedItems.length}</Text>
       </View>
+      <Pressable
+        style={({ pressed }) => [
+          styles.itemBox,
+          pressed && {
+            opacity: 0.8,
+          },
+        ]}
+        onPress={()=> 
+          Alert.alert("Pals Collected" ,`${selectedItems.map((secItem) => secItem).join("\n")}`) 
+        }
+      >
+        <Text
+          style={{ fontWeight: "600", color: "white", paddingHorizontal: 20 }}
+        >
+          See more
+        </Text>
+      </Pressable>
 
       {isLoading ? (
         <ActivityIndicator />
@@ -77,31 +112,41 @@ export default function App() {
           data={formatData(data, columns)}
           keyExtractor={({ id }) => id}
           numColumns={columns}
-          renderItem={({ item }) => (
+          columnWrapperStyle={{ gap: 10, paddingHorizontal: 12 }}
+          contentContainerStyle={{
+            gap: 10,
+            paddingBottom: 20,
+            alignItems: "center",
+          }}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item, index }) => (
             <View style={[styles.card, styles.shadowProp]}>
               <Pressable
                 // onPress={() => {Linking.openURL(item.wiki)}}
-                onPress={() => setCount(count + 1)}
-                onLongPress={() => {
-                  setCount(count - 1);
+                style={{
+                  backgroundColor:
+                    selectedPals == index
+                      ? Global.COLOR.ORANGE
+                      : Global.COLOR.CARDBACKGROUND,
                 }}
-                style={({ pressed }) => [
-                  styles.itemBox,
-                  pressed && {
-                    opacity: 0.8,
-                    backgroundColor: pressed ? "orange" : "green",
-                  },
-                ]}
+                onPress={() => {
+                  setSelectedPals(index);
+                  handleOnLongPress(item);
+                }}
 
+                // onLongPress={()=>handleOnLongPress(item)}
               >
                 <View style={styles.image}>
                   <Image
                     source={{ uri: `${item.imageWiki}` }}
                     style={{
-                      flex: 1,
-                      width: 75,
+                      // flex: 1,
+                      width: "100%",
                       height: 75,
-                      // backgroundColor: 'white',
+                      backgroundColor:
+                        selectedPals == index
+                          ? "#fff"
+                          : Global.COLOR.CARDBACKGROUND,
                       resizeMode: "contain",
                       alignSelf: "center",
                     }}
@@ -144,9 +189,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Global.COLOR.BACKGROUND,
-    alignItems: "center",
-    padding: 24,
-    paddingHorizontal: 50,
+    // alignItems: "center",
+    // padding: 24,
+    // paddingHorizontal: 50,
   },
   header: {
     color: Global.COLOR.ORANGE,
@@ -157,7 +202,8 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: Global.COLOR.CARDBACKGROUND,
-    maxWidth: 150,
+    height: "100%", //antes era 200
+    width: 100,
     borderWidth: 5,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -178,24 +224,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingTop: 5,
   },
-  viewButton: {
-    paddingTop: 10,
-    alignSelf: "center",
-    flexDirection: "row",
-    gap: 50,
-  },
   image: {
     borderColor: Global.COLOR.BORDERCARD,
     borderWidth: 2,
     borderRadius: 10,
   },
   selecionado: {
-    tintColor: "red",
     backgroundColor: Global.COLOR.ORANGE,
   },
   textContainer: {
     alignSelf: "center",
-    marginBottom: 50,
+    marginBottom: 30,
     borderBottomColor: Global.COLOR.DARKGRAY,
     borderBottomWidth: 2,
   },
