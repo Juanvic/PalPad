@@ -10,6 +10,8 @@ import {
   Pressable,
   Alert,
   Button,
+  Linking,
+  Share,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -53,6 +55,17 @@ export default function App() {
     return data;
   };
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+        'Pals captured:'+ '\n' + `${selectedItems.map((secItem) => secItem).join("\n")}`,
+      });
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
+
   useEffect(() => {
     getPals();
   }, []);
@@ -66,19 +79,24 @@ export default function App() {
   const [selectedItems, setSelectedItems] = useState([]);
 
   const selectPals = (data) => {
-    if (selectedItems.includes("#" + data.key + " " + data.name)){
-      const newListItem = selectedItems.filter(dataInfo => dataInfo !== "#" + data.key + " " + data.name)
-      return setSelectedItems(newListItem)
+    if (selectedItems.includes("#" + data.key + " " + data.name)) { //deselect
+      const newListItem = selectedItems.filter(
+        (dataInfo) => dataInfo !== "#" + data.key + " " + data.name
+      );
+      return setSelectedItems(newListItem);
     }
     setSelectedItems([...selectedItems, "#" + data.key + " " + data.name]);
   };
+
+  const getSelected = (data) => selectedItems.includes("#" + data.key + " " + data.name);
+  const deselectAllItems = () => setSelectedItems([]); //reset all selections
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>Collection</Text>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>
+        <Text style={styles.textInfo}>
           {selectedItems.length}/{data.length}
         </Text>
       </View>
@@ -90,22 +108,19 @@ export default function App() {
           },
         ]}
         onPress={() =>
-          Alert.alert("Collected Pals",
+          Alert.alert(
+            "Collected Pals",
             `${selectedItems.map((secItem) => secItem).join("\n")}`,
             [
               {
                 text: "Share",
-                onPress: () => Alert.alert("Pergunte-me mais tarde clicado")
+                onPress: onShare,
               },
               {
-                text: "Export",
-                onPress: () => Alert.alert("Cancelar Clicado"),
-                style: "cancel"
+                text: "Close",
               },
-              { 
-                text: "Close", 
-              }
-            ])
+            ]
+          )
         }
       >
         <Text
@@ -131,21 +146,33 @@ export default function App() {
           }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
-            <View style={[styles.card, styles.shadowProp]}>
+            <View //card
+              style={{
+                backgroundColor:
+                  selectedPals == index && 
+                  selectedItems.length 
+                    ? Global.COLOR.ORANGE
+                    : Global.COLOR.CARDBACKGROUND,
+                height: "100%",
+                width: 100,
+                borderWidth: 5,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                borderRadius: 10,
+                margin: 5,
+                elevation: 2,
+              }}
+            >
               <Pressable
-                // onPress={() => {Linking.openURL(item.wiki)}}
-                style={{
-                  backgroundColor:
-                    selectedPals == index
-                      ? Global.COLOR.ORANGE
-                      : Global.COLOR.CARDBACKGROUND,
-                }}
                 onPress={() => {
                   setSelectedPals(index);
+                  setSelectedItems(index);
                   selectPals(item);
                 }}
 
-                // onLongPress={()=>selectPals(item)}
+                onLongPress={() => {
+                  Linking.openURL(item.wiki);
+                }}
               >
                 <View style={styles.image}>
                   <Image
@@ -155,7 +182,8 @@ export default function App() {
                       width: "100%",
                       height: 75,
                       backgroundColor:
-                        selectedPals == index
+                        selectedPals == index && 
+                        selectedItems.length > 0
                           ? "#fff"
                           : Global.COLOR.CARDBACKGROUND,
                       resizeMode: "contain",
@@ -200,9 +228,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Global.COLOR.BACKGROUND,
-    // alignItems: "center",
-    // padding: 24,
-    // paddingHorizontal: 50,
   },
   header: {
     color: Global.COLOR.ORANGE,
@@ -221,12 +246,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 5,
     elevation: 2,
-  },
-  shadowProp: {
-    shadowColor: Global.COLOR.SHADOW,
-    shadowOffset: { width: -2, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   textoPals: {
     color: "#fff",
@@ -249,7 +268,7 @@ const styles = StyleSheet.create({
     borderBottomColor: Global.COLOR.DARKGRAY,
     borderBottomWidth: 2,
   },
-  text: {
+  textInfo: {
     textAlign: "center",
     color: Global.COLOR.ORANGE,
     padding: 20,

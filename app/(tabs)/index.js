@@ -40,11 +40,14 @@ export default function App() {
     getPals();
   }, []);
 
+
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (query) => {
     setSearchQuery(query);
   };
+
 
   if (!loaded) {
     return null;
@@ -55,7 +58,8 @@ export default function App() {
       <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>Palpad</Text>
       {/* <TextInput
-        placeholder="Buscar"
+        placeholder="Search"
+        placeholderTextColor= "#ccc"
         style={styles.searchBox}
         clearButtonMode="always"
         autoCapitalize="none"
@@ -198,8 +202,9 @@ const styles = StyleSheet.create({
     gap: 50,
   },
   searchBox: {
-    color: Global.COLOR.ORANGE,
-    backgroundColor: "#fff",
+    height:  50,
+    justifyContent: 'center',
+    backgroundColor: "#363636",
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
