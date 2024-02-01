@@ -1,5 +1,33 @@
 # PalPad
 
+<p>
+    <h1 align="center">
+    <img alt="PalPad Icon" title="PalPad" src="assets/icon.png" width="200px" />
+    </h1>
+</p>
+<p align="center">
+  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/Juanvic/PalPad.svg">
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/Juanvic/PalPad.svg">
+</p>
+  
+<p align="center">
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/Juanvic/PalPad.svg">
+  <a href="https://github.com/Juanvic/PalPad/commits/master">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Juanvic/PalPad.svg">
+  </a>
+  <a href="https://github.com/Juanvic/PalPad/issues">
+    <img alt="Repository issues" src="https://img.shields.io/github/issues/Juanvic/PalPad.svg">
+  </a>
+  <img alt="GitHub" src="https://img.shields.io/github/license/Juanvic/PalPad.svg">
+</p>
+
+## Preview
+
+<p align="center">
+    <img alt="Screenshot Preview 1" src=".github/preview1.jpg" width="200px">
+    <img alt="Screenshot Preview 2" src=".github/preview2.jpg" width="200px">
+</p>
+
 ## Goal
 This little project has the goal of only show the pals of the game **Palworld** which was released on early acess on January of 2024, this game has quickly become an worldwide sucess since then so i decided to develop this app to bring more information to the players about the game and its monsters in the most pratical way possible.
 
