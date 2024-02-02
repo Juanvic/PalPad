@@ -14,6 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import Global from "../../Global";
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -23,11 +24,15 @@ export default function App() {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [value, setValue] = useState("");
 
   const getPals = async () => {
     try {
       const response = await fetch(Global.URL);
       const json = await response.json();
+      setOriginalData(json.content);
       setData(json.content);
     } catch (error) {
       console.error(error);
@@ -38,35 +43,47 @@ export default function App() {
 
   useEffect(() => {
     getPals();
+    getData();
   }, []);
-
-
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
-
 
   if (!loaded) {
     return null;
+  }
+
+  function search(s) {
+    let arr = JSON.parse(JSON.stringify(originalData));
+    setData(arr.filter((d) => d.name.includes(s) || d.key.includes(s) || d.types.includes(s) ));
+  }
+
+  async function handleAsyncStorage() {
+    console.log("texto da busca: " + searchQuery);
+    //armazenar valor no asyncstorage
+    await AsyncStorage.setItem("@App1", searchQuery);
+    getData();
+  }
+
+  async function getData() {
+    const response = await AsyncStorage.getItem("@App1");
+    if (response) {
+      setValue(response);
+    }
   }
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" backgroundColor="#1d1d1d" />
       <Text style={[styles.header]}>Palpad</Text>
-      {/* <TextInput
+      <TextInput
         placeholder="Search"
-        placeholderTextColor= "#ccc"
+        placeholderTextColor="#ccc"
         style={styles.searchBox}
         clearButtonMode="always"
-        autoCapitalize="none"
         autoCorrect={false}
-        value={searchQuery}
-        onChange={(query) => handleSearch(query)}
-      /> */}
+        onChangeText={(s) => search(s)}
+        // value={searchQuery}
+        // onChange={handleAsyncStorage}
+        // onChangeText={(value) => setSearchQuery(value)}
+      />
 
       {isLoading ? (
         <ActivityIndicator />
@@ -202,8 +219,10 @@ const styles = StyleSheet.create({
     gap: 50,
   },
   searchBox: {
-    height:  50,
-    justifyContent: 'center',
+    height: 50,
+    width: '75%',
+    color: "#fff",
+    justifyContent: "center",
     backgroundColor: "#363636",
     borderColor: "#ccc",
     borderWidth: 1,
