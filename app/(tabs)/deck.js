@@ -12,11 +12,13 @@ import {
   Button,
   Linking,
   Share,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import Global from "../../Global";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -26,6 +28,7 @@ export default function App() {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
 
   const columns = 3;
 
@@ -33,6 +36,7 @@ export default function App() {
     try {
       const response = await fetch(Global.URL);
       const json = await response.json();
+      setOriginalData(json.content);
       setData(json.content);
     } catch (error) {
       console.error(error);
@@ -59,7 +63,9 @@ export default function App() {
     try {
       const result = await Share.share({
         message:
-        'Pals captured:'+ '\n' + `${selectedItems.map((secItem) => secItem).join("\n")}`,
+          "Pals captured:" +
+          "\n" +
+          `${selectedItems.map((secItem) => secItem).join("\n")}`,
       });
     } catch (error) {
       Alert.alert(error.message);
@@ -67,6 +73,7 @@ export default function App() {
   };
 
   useEffect(() => {
+    getData();
     getPals();
   }, []);
 
@@ -74,22 +81,50 @@ export default function App() {
     return null;
   }
 
+  function search(s) {
+    let arr = JSON.parse(JSON.stringify(originalData));
+    setData(
+      arr.filter(
+        (d) => d.name.includes(s) || d.key.includes(s) || d.types.includes(s)
+      )
+    );
+  }
+
   const [selectedPals, setSelectedPals] = useState(-1);
 
   const [selectedItems, setSelectedItems] = useState([]);
 
   const selectPals = (data) => {
-    if (selectedItems.includes("#" + data.key + " " + data.name)) { //deselect
+    if (selectedItems.includes("#" + data.key + " " + data.name)) {
+      //deselect
       const newListItem = selectedItems.filter(
         (dataInfo) => dataInfo !== "#" + data.key + " " + data.name
       );
       return setSelectedItems(newListItem);
     }
     setSelectedItems([...selectedItems, "#" + data.key + " " + data.name]);
+    handleAsyncStorage();
   };
 
-  const getSelected = (data) => selectedItems.includes("#" + data.key + " " + data.name);
+  const getSelected = (data) =>
+    selectedItems.includes("#" + data.key + " " + data.name);
   const deselectAllItems = () => setSelectedItems([]); //reset all selections
+
+  const [value, setValue] = useState([]);
+
+  async function handleAsyncStorage() {
+    //armazenar valor no asyncstorage
+    await AsyncStorage.setItem("@App2", JSON.stringify(selectedItems));
+    getData();
+    console.log("itens selecionados: " + JSON.stringify(selectedItems));
+  }
+
+  async function getData() {
+    const response = await AsyncStorage.getItem("@App2");
+    if (response) {
+      setValue(response);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -97,8 +132,19 @@ export default function App() {
       <Text style={[styles.header]}>Collection</Text>
       <View style={styles.textContainer}>
         <Text style={styles.textInfo}>
-          {selectedItems.length}/{data.length}
+          {selectedItems.length}/{originalData.length}
         </Text>
+      </View>
+      <View style={{alignItems: 'center', paddingBottom: 20}}>
+
+        <TextInput
+          placeholder="Search"
+          placeholderTextColor="#ccc"
+          style={styles.searchBox}
+          clearButtonMode="always"
+          autoCorrect={false}
+          onChangeText={(s) => search(s)}
+        />
       </View>
       <Pressable
         style={({ pressed }) => [
@@ -149,8 +195,7 @@ export default function App() {
             <View //card
               style={{
                 backgroundColor:
-                  selectedPals == index && 
-                  selectedItems.length 
+                  selectedPals == index && selectedItems.length > -1
                     ? Global.COLOR.ORANGE
                     : Global.COLOR.CARDBACKGROUND,
                 height: "100%",
@@ -168,8 +213,8 @@ export default function App() {
                   setSelectedPals(index);
                   setSelectedItems(index);
                   selectPals(item);
+                  handleAsyncStorage(item);
                 }}
-
                 onLongPress={() => {
                   Linking.openURL(item.wiki);
                 }}
@@ -182,8 +227,7 @@ export default function App() {
                       width: "100%",
                       height: 75,
                       backgroundColor:
-                        selectedPals == index && 
-                        selectedItems.length > 0
+                        selectedPals == index && selectedItems.length > -1
                           ? "#fff"
                           : Global.COLOR.CARDBACKGROUND,
                       resizeMode: "contain",
@@ -273,5 +317,16 @@ const styles = StyleSheet.create({
     color: Global.COLOR.ORANGE,
     padding: 20,
     fontSize: 40,
+  },
+  searchBox: {
+    // height: 50,
+    width: "80%",
+    color: "#fff",
+    justifyContent: "center",
+    backgroundColor: "#363636",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 20,
   },
 });
