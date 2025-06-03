@@ -1,5 +1,5 @@
 export default {
-    URL: "https://national-lenient-kid.ngrok-free.app/?page=1&limit=200",
+    URL: "localhost:3000/?page=1&limit=200",
     COLOR: {
       BACKGROUND: '#1d1d1d',
       BACKGROUND2: '#292929',
