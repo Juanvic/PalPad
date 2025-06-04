@@ -11,7 +11,7 @@ export default function Sobre() {
       <View style={styles.main}>
         <Text style={[styles.title, {color: '#fff'}]}>Credits</Text>
         <Text style={[styles.subtitle, {color: '#fff'}]}>Juan Almeida the developer</Text>
-        <Text style={{fontStyle: 'italic', color: Global.COLOR.LIGHTBLUE, fontSize: 25}}>@juanvic04 on X/Twitter</Text>
+        <Link style={{fontStyle: 'italic', color: Global.COLOR.LIGHTBLUE, fontSize: 25}} href='https://bsky.app/profile/juanvic.bsky.social' >@juanvic on Bluesky</Link>
         <Text style={[{color:'#fff', fontSize: 25}]}>Victor Eyer is the api developer</Text>
         <Link style={[{ fontWeight: "bold", fontStyle: 'italic', color: '#fff', fontSize: 25}]} href='https://github.com/mlg404/palworld-paldex-api'>Api's github</Link>
 
