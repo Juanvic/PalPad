@@ -1,60 +1,35 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import './globals.css';
+import { Stack } from "expo-router";
+import { Tabs } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import React, {useState, useEffect} from 'react';
+import Global from '../Global';
 
-import { useColorScheme } from '@/components/useColorScheme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-  );
+    <Tabs screenOptions={{headerShown: false, tabBarStyle: {backgroundColor: Global.COLOR.BACKGROUND2, borderColor: Global.COLOR.ORANGE}, tabBarActiveTintColor: Global.COLOR.ORANGE }}
+            
+        >
+            <Tabs.Screen 
+                name="index"
+                options={{title: "Home", tabBarIcon: ({size, color}) => (<MaterialIcons name="home" size={size} color={color} />)}}
+            >
+            </Tabs.Screen>
+            <Tabs.Screen
+                name="deck"
+                options={{title: "PalDeck", tabBarIcon: ({size, color}) => (<MaterialIcons name="apps" size={size} color={color} />)}}
+
+            >
+            </Tabs.Screen>
+            <Tabs.Screen
+                name="about"
+                options={{title: "About", tabBarIcon: ({size, color}) => (<MaterialIcons name="person" size={size} color={color} />)}}
+
+            >
+            </Tabs.Screen>
+
+        </Tabs>
+
+
+  )
+  
 }
