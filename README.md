@@ -42,7 +42,8 @@ The game **Palworld** is a survival and monster taming/creature collection, the 
 
 ## Build instructions
 
-This project uses the node version **20.5.1**
+This project uses: 
+Node version **20.5.1** and Expo SDK version **54**
 
 1. Run the command **npm install** ou **yarn install** to install all the necessary packages
 2. Run the command **npm start** ou **yarn start** 
