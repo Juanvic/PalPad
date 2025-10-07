@@ -6,7 +6,6 @@ import {
   Image,
   ActivityIndicator,
   FlatList,
-  SafeAreaView,
   Pressable,
   Alert,
   Button,
@@ -19,6 +18,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import Global from "../../Global";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   const [loaded] = useFonts({
@@ -34,7 +34,12 @@ export default function App() {
 
   const getPals = async () => {
     try {
-      const response = await fetch(Global.URL);
+      const response = await fetch(Global.URL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const json = await response.json();
       setOriginalData(json.content);
       setData(json.content);
@@ -135,7 +140,7 @@ export default function App() {
           {selectedItems.length}/{originalData.length}
         </Text>
       </View>
-      <View style={{alignItems: 'center', paddingBottom: 20}}>
+      <View style={{ alignItems: 'center', paddingBottom: 20 }}>
 
         <TextInput
           placeholder="Search"
@@ -250,7 +255,7 @@ export default function App() {
                 </Text>
                 <Text style={styles.textoPals}>
                   Type:{" "}
-                  {item.types.map((secType) => secType).join(" \nType²: ")}{" "}
+                  {item.types.map((secType) => secType.name).join(" \n& ")}{" "}
                   {"\n"}
                 </Text>
 

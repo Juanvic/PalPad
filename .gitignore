@@ -37,3 +37,4 @@ yarn-error.*
 #arquivo
 App.js
 Global.js
+expo-env.d.ts

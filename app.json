@@ -4,7 +4,6 @@
     "slug": "palpad",
     "version": "1.0.3",
     "orientation": "portrait",
-    "newArchEnabled": false,
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "scheme": "palpad-scheme",

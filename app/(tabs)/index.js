@@ -6,11 +6,11 @@ import {
   Image,
   Pressable,
   TextInput,
-  SafeAreaView,
   ActivityIndicator,
   FlatList,
   Linking,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import Global from "../../Global";
 import { useFonts } from "expo-font";
@@ -30,7 +30,12 @@ export default function App() {
 
   const getPals = async () => {
     try {
-      const response = await fetch(Global.URL);
+      const response = await fetch(Global.URL, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const json = await response.json();
       setOriginalData(json.content);
       setData(json.content);
@@ -144,7 +149,7 @@ export default function App() {
                   }}
                 >
                   Type:{" "}
-                  {item.types.map((secType) => secType).join(" \nType²: ")}{" "}
+                  {item.types.map((secType) => secType.name).join(" \n& ")}{" "}
                 </Text>
                 <Text style={styles.textoPals}>
                   Suitability:{" "}
